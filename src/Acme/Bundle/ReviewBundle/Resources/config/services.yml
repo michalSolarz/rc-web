@@ -1,0 +1,8 @@
+parameters:
+  acme_review.handler.class: Acme\Bundle\ReviewBundle\Handler\MoviesHandler
+  acme_review.entity.class: Acme\Bundle\ReviewBundle\Entity\Movie
+
+services:
+  acme_review.movies.handler:
+    class: %acme_review.handler.class%
+    arguments: [@doctrine.orm.default_entity_manager, %acme_review.entity.class%]

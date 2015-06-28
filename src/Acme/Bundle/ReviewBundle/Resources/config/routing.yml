@@ -1,0 +1,8 @@
+acme_review_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: AcmeReviewBundle:Default:index }
+
+acme_review_get_movie_list:
+    resource: "@AcmeReviewBundle/Controller/ApiController.php"
+    prefix: /api/
+    type: rest
