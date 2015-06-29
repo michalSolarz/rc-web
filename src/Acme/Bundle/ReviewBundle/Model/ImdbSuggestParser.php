@@ -29,9 +29,8 @@ class ImdbSuggestParser implements RawDataParserInterface
 
     public function clearString()
     {
-        $temp = str_replace(array('imdb$'.$this->parameter.'(', ')'), '', $this->rawData);
-        $temp2 = json_decode($temp);
-        $this->clearedString = $temp2->d;
+        $decodedJson = json_decode(str_replace(array('imdb$'.$this->parameter.'(', ')'), '', $this->rawData));
+        $this->clearedString = $decodedJson->d;
     }
 
     public function getCleared()
