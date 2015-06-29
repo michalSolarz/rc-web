@@ -9,6 +9,8 @@
 namespace Acme\Bundle\ReviewBundle\Handler;
 
 
+use Acme\Bundle\ReviewBundle\Model\imdbGrabber;
+use Acme\Bundle\ReviewBundle\Model\ImdbSuggestParser;
 use Acme\Bundle\ReviewBundle\Model\MoviesHandlerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -33,23 +35,18 @@ class MoviesHandler implements MoviesHandlerInterface
             ->getQuery();
 
         if (!$query->getResult()) {
-            $url = "http://sg.media-imdb.com/suggests/a/".$title.".json";
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            $curlData = curl_exec($curl);
-            curl_close($curl);
-            $result = str_replace(array('imdb$'.$title.'(', ')'), '', $curlData);
-            $json = json_decode($result);
-            $array = $json->d;
-            $finalArray = array();
-            foreach ($array as $object) {
-                if (property_exists($object, 'y')) {
-                    array_push($finalArray, $object);
-                }
-            }
-            var_dump($finalArray);
+            $imdbGrabber = new imdbGrabber(
+                'http://sg.media-imdb.com/suggests/',
+                $title,
+                array("X-Requested-With: XMLHttpRequest", "Content-Type: application/json; charset=utf-8")
+            );
+            $imdbRawData = $imdbGrabber->getResults();
+            $imdbSuggestParser = new ImdbSuggestParser($imdbRawData);
+            $imdbSuggestParser->setParameter($title);
+            $imdbSuggestParser->clearString();
+            $imdbSuggestParser->filterForFilms();
+
+            return $imdbSuggestParser->getFilms();
         } else {
             return $query->getResult();
         }

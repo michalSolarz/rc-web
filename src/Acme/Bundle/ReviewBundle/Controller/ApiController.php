@@ -22,4 +22,12 @@ class ApiController extends FOSRestController
 
         return $this->handleView($view);
     }
+
+    public function getDupaAction()
+    {
+        $data = [1, 2, 3];
+        $view = $this->view($data, 200);
+
+        return $this->handleView($view);
+    }
 }
