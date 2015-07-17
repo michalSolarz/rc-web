@@ -8,12 +8,32 @@
 
 namespace Acme\Bundle\ReviewBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class ApiController extends FOSRestController
 {
+    /**
+     * List all notes.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     *
+     * @Annotations\View()
+     *
+     * @param Request $request the request object
+     * @param ParamFetcherInterface $paramFetcher param fetcher service
+     *
+     * @return array
+     */
     public function getMoviesAction($title)
     {
         $moviesHandler = $this->get('acme_review.movies.handler');
@@ -23,11 +43,4 @@ class ApiController extends FOSRestController
         return $this->handleView($view);
     }
 
-    public function getDupaAction()
-    {
-        $data = [1, 2, 3];
-        $view = $this->view($data, 200);
-
-        return $this->handleView($view);
-    }
 }
